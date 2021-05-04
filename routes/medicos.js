@@ -9,12 +9,12 @@ const { validarCampos } = require('../middlewares/validar-campos');
 
 const { validarJWT } = require('../middlewares/validar-jwt');
 
- const {
+const {
     getMedicos,
     crearMedico,
     actualizarMedico,
     borrarMedico
- } = require('../controllers/medicos');
+} = require('../controllers/medicos');
 
 
 const router = Router();
@@ -34,12 +34,17 @@ router.post('/',
 
 router.put('/:id',
     [
-        
+        validarJWT,
+        check('nombre', 'El nombre del hospital es necesario').not().isEmpty(),
+        check('hospital', 'El id del hospital debe ser válido').isMongoId(),
+        validarCampos
     ],
     actualizarMedico);
 
 
-router.delete('/:id', borrarMedico);
+router.delete('/:id',
+    validarJWT,
+    borrarMedico);
 
 
 
