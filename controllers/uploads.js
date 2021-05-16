@@ -7,12 +7,12 @@ const { actualizarImagen } = require("../helpers/actualizar-imagen");
 
 const fileUpload = (req, res = response) => {
 
-    const tipo = req.params.tipo;
+    const tipo = parseInt(req.params.tipo);
     const id = req.params.id;
 
     //Validar tipo
-    const tiposValidos = ['hospitales', 'medicos', 'usuarios'];
-    if (!tiposValidos.includes(tipo)) {
+    var tiposValidos = [0, 1, 2];
+    if (tiposValidos.indexOf(tipo)<0) {
         return res.status(400).json({
             ok: false,
             msg: 'No es un médico, usuario u hospital'
@@ -49,7 +49,7 @@ const fileUpload = (req, res = response) => {
 
 
     // Path para guardar la imagen
-    const path = `./uploads/${tipo}/${nombreArchivo}`;
+    const path = `./uploads/${obtieneNombre(tipo)}/${nombreArchivo}`;
 
 
     // Mover la imagen 
@@ -63,7 +63,7 @@ const fileUpload = (req, res = response) => {
         }
 
         // Actualizar la base de datos
-        actualizarImagen(tipo, id, nombreArchivo);
+        actualizarImagen(obtieneNombre(tipo), id, nombreArchivo);
 
 
 
@@ -100,6 +100,22 @@ const retornaImagen = (req, res = response) => {
 
     }
 
+}
+
+const obtieneNombre = (tipo) => {
+    let nombreTipo = 'usuarios'; 
+    switch(tipo){
+        case 0:
+            nombreTipo = 'usuarios';
+        break;
+        case 1: 
+            nombreTipo = 'medicos'; 
+        break;
+        case 2: 
+            nombreTipo = 'hospitales';
+        break;
+    }
+    return nombreTipo;
 }
 
 
